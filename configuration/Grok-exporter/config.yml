@@ -1,0 +1,19 @@
+global:
+    config_version: 2
+input:
+    type: file
+    path: access.log
+    readall: true
+grok:
+    patterns_dir: ./patterns
+metrics:
+    - type: counter
+      name: apache_http_response_codes_total
+      help: HTTP requests to Apache
+      match: '%{COMBINEDAPACHELOG}'
+      labels:
+          method: '{{.verb}}'
+          path: '{{.request}}'
+          code: '{{.response}}'
+server:
+    port: 9144
